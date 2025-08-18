@@ -1,0 +1,479 @@
+listeners:
+  - name: tproxy
+    type: tproxy
+    port: 1181
+mixed-port: 1080
+
+# --- ОБЩИЕ НАСТРОЙКИ ЯДРА ---
+tcp-concurrent: true
+allow-lan: true
+mode: rule
+geo-auto-update: true
+geo-update-interval: 12
+log-level: silent
+ipv6: false
+external-controller: 0.0.0.0:9090
+external-ui: ./zashboard
+external-ui-url: 'https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip'
+geodata-mode: true
+profile:
+  store-selected: true
+find-process-mode: 'off'
+
+# --- НАСТРОЙКИ СНИФФЕРА ---
+sniffer:
+  enable: true
+  parse-pure-ip: true
+  force-dns-mapping: true 
+  skip-domain:
+    - '+.telegram.org'
+  skip-ip:
+    - 91.108.0.0/16
+    - 149.154.0.0/16
+  sniff:
+    HTTP:
+      ports:
+        - 80
+        - 8080-8880
+      override-destination: true
+    TLS:
+      ports:
+        - 443
+        - 8443
+    QUIC:
+      ports: [443]
+
+# --- СПИСОК ПРОКСИ-СЕРВЕРОВ (КЛЮЧИ) ---
+proxies:
+  - name: '🇪🇪 SERVER'
+    icon: 'https://www.svgrepo.com/download/365909/estonia.svg' 
+    type: vless
+    server: YOUR
+    port: 443
+    uuid: YOUR
+    network: ws
+    tls: true
+    servername: YOUR
+    skip-cert-verify: true
+    client-fingerprint: chrome
+    udp: true
+    ws-opts:
+      path: YOUR
+
+  - name: '🇩🇪 SERVER'
+    icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png'
+    type: vless
+    server: YOUR
+    port: 443
+    uuid: YOUR
+    network: ws
+    tls: true
+    servername: YOUR
+    skip-cert-verify: true
+    client-fingerprint: chrome
+    udp: true
+    ws-opts:
+      path: YOUR
+
+# --- ГРУППЫ ПРОКСИ (ПОЛИТИКИ) ---
+proxy-groups:
+  - name: 'PROXY FASTEST 🚀'
+    icon:  'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png'
+    type: url-test
+    proxies:
+      - '🇪🇪 SERVER'
+      - '🇩🇪 SERVER'
+    url: 'http://www.msftncsi.com/ncsi.txt'
+    interval: 60
+    lazy: true
+    tolerance: 50
+
+  - name: 'PROXY FAILOVER 🇪🇺'
+    icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png'
+    type: fallback
+    proxies:
+      - 'PROXY FASTEST 🚀'
+      - DIRECT
+    url: 'http://www.msftncsi.com/ncsi.txt'
+    interval: 60
+    lazy: true
+
+  - name: 'GEMINI'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/331406/gemini.svg'
+
+  - name: 'SPOTIFY'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/349511/spotify.svg'
+    
+  - name: 'DISCORD'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/353655/discord-icon.svg'
+    
+  - name: 'WHATSAPP'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/303147/whatsapp-icon-logo.svg'
+
+  - name: 'NETFLIX'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/303341/netflix-1-logo.svg'
+
+  - name: '2IP.IO'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/415672/address-location-map.svg'
+
+  - name: 'TWITTER'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/452121/twitter-1.svg'
+
+  - name: 'INSTAGRAM'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/452229/instagram-1.svg'
+
+  - name: 'GOOGLE'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/475656/google-color.svg'
+
+  - name: 'MICROSOFT'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/452062/microsoft.svg'
+
+  - name: 'GITHUB'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/475654/github-color.svg'
+
+  - name: 'TIDAL'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/504993/tidal.svg'
+
+  - name: 'TELEGRAM'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/354443/telegram.svg'
+
+  - name: 'RU ТРАФИК'
+    type: select
+    proxies:
+       - DIRECT
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+    icon: 'https://www.svgrepo.com/show/508628/flag-ru.svg'
+
+  - name: 'ОСТАЛЬНОЙ ТРАФИК'
+    type: select
+    # exclude-filter: '(?i)Russia|RU'
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/293111/maps-and-flags-global.svg'
+
+  - name: 'БЛОКИРОВКА РЕКЛАМЫ'
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+      - 'PROXY FAILOVER 🇪🇺'
+      - '🇪🇪 SERVER'
+      - '🇩🇪 SERVER'    
+    icon: 'https://www.svgrepo.com/show/300290/sign-roadblock.svg'
+
+  - name: 'YOUTUBE'
+    type: select
+    proxies:
+       - DIRECT
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+    icon: 'https://www.svgrepo.com/show/13671/youtube.svg'
+
+  - name: 'OPENAI'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/306500/openai.svg'
+
+  - name: 'TIKTOK'
+    type: select
+    proxies:
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+       - DIRECT
+    icon: 'https://www.svgrepo.com/show/303260/tiktok-logo-logo.svg'
+
+  - name: 'STEAM'
+    type: select
+    proxies:
+       - DIRECT
+       - 'PROXY FAILOVER 🇪🇺'
+       - '🇪🇪 SERVER'
+       - '🇩🇪 SERVER'
+    icon: 'https://www.svgrepo.com/show/452107/steam.svg'
+
+  - name: GLOBAL
+    type: select
+    hidden: true
+    proxies:
+      - 'PROXY FASTEST 🚀'
+      - 'PROXY FAILOVER 🇪🇺'
+      - 'RUS'
+      - 'YOUTUBE'
+      - 'GOOGLE'
+      - 'STEAM'
+      - 'MICROSOFT'
+      - 'GITHUB'
+      - 'GEMINI'  
+      - 'INSTAGRAM'
+      - 'TELEGRAM'
+      - 'TWITTER'
+      - 'DISCORD'
+      - 'WHATSAPP'
+      - 'NETFLIX'
+      - 'SPOTIFY'
+      - 'OPENAI'
+      - 'TIDAL'
+      - '2IP.IO' 
+      - 'RU ТРАФИК'
+      - 'БЛОКИРОВКА РЕКЛАМЫ'
+      - 'ОСТАЛЬНОЙ ТРАФИК'
+      - 'TIKTOK'
+      - DIRECT
+
+# --- НАСТРОЙКИ GEO-ДАННЫХ ---
+geox-url:
+  geosite: 'https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat'
+  geoip: 'https://github.com/MetaCubeX/meta-rules-dat/releases/latest/download/geoip.dat'
+
+# --- ПРОВАЙДЕРЫ ПРАВИЛ ---
+rule-providers:
+  hagezi_pro:
+    type: http
+    behavior: domain
+    format: mrs
+    url: https://github.com/zxc-rv/ad-filter/releases/latest/download/adlist.mrs
+    path: ./rule-providers/adlist.mrs
+    interval: 86400
+
+  discord_domains:
+    type: http
+    behavior: domain
+    format: mrs
+    url: 'https://github.com/MetaCubeX/meta-rules-dat/raw/meta/geo/geosite/discord.mrs'
+    path: ./rule-providers/discord_domains.mrs
+    interval: 86400
+
+  discord_voiceips:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: 'https://github.com/legiz-ru/mihomo-rule-sets/raw/main/other/discord-voice-ip-list.mrs' 
+    path: ./rule-providers/discord_voiceips.mrs
+    interval: 86400
+
+  TIKTOK:
+    type: http
+    behavior: domain
+    format: mrs
+    url: 'https://github.com/MetaCubeX/meta-rules-dat/raw/meta/geo/geosite/tiktok.mrs'
+    path: ./rule-providers/tiktok.mrs
+    interval: 86400
+
+  youtube_domains:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/youtube_domains.list"
+    path: ./rule-providers/youtube_domains.list
+    interval: 86400
+
+
+# ТЕСТОВЫЙ БЛОК DISCORD ######################
+#  DISCORD:
+#    type: inline
+#    behavior: classical
+#    format: text
+#    payload:
+#      - AND,((DOMAIN-KEYWORD,discord),(NOT,((DOMAIN-SUFFIX,ru))))
+#      - AND,((IP-CIDR,34.0.192.0/18,no-resolve),(NETWORK,UDP),(DST-PORT,50000-50100))
+#      - AND,((IP-CIDR,35.192.0.0/11,no-resolve),(NETWORK,UDP),(DST-PORT,50000-50100))
+#      - AND,((IP-CIDR,66.22.192.0/18,no-resolve),(NETWORK,UDP),(DST-PORT,50000-50100))
+
+
+# --- ПРАВИЛА МАРШРУТИЗАЦИИ ---
+rules:
+  # БЛОКИРОВКА | UDP-ТРАФИКА НА 443 ПОРТ С НЕ РОССИЙСКИХ IP
+  - AND,((NETWORK,UDP),(DST-PORT,443),(GEOIP,!RU)),БЛОКИРОВКА РЕКЛАМЫ
+
+  # ПРОКСИ | ИСКЛЮЧЕНИЕ | ИЗ БЛОКИРОВКИ РЕКЛАМЫ И ТРЕКЕРОВ | ДЛЯ IPHONE LENA
+  - SRC-IP-CIDR,192.168.100.99/32,PROXY FAILOVER 🇪🇺   # LENA IPHONE
+
+  # БЛОКИРОВКА | РЕКЛАМЫ И ТРЕКЕРОВ
+  - GEOSITE,CATEGORY-ADS-ALL,БЛОКИРОВКА РЕКЛАМЫ
+  - RULE-SET,hagezi_pro,БЛОКИРОВКА РЕКЛАМЫ
+  # - DOMAIN,log.strm.yandex.ru,БЛОКИРОВКА РЕКЛАМЫ # имеется в списке hagezi_pro
+  - DOMAIN,tracking.ott.yandex.net,БЛОКИРОВКА РЕКЛАМЫ
+  - DOMAIN,egress.yandex.net,БЛОКИРОВКА РЕКЛАМЫ
+  - DOMAIN-SUFFIX,loveplanet.ru,REJECT
+  - DOMAIN-SUFFIX,mamba.ru,REJECT
+
+  # НАПРЯМУЮ | СЛУЖЕБНЫЕ ПРАВИЛА
+  - GEOIP,PRIVATE,DIRECT,no-resolve
+
+  # ПРОКСИ | ИСКЛЮЧЕНИЯ ДЛЯ РОССИЙСКОГО ТРАФИКА
+  - DOMAIN,jut.su,PROXY FAILOVER 🇪🇺
+
+  # НАПРЯМУЮ | РОССИЙСКИЙ ТРАФИК
+  - DOMAIN-SUFFIX,avito.ru,DIRECT
+  - DOMAIN-SUFFIX,avito.st,DIRECT
+  - DOMAIN-SUFFIX,yandex-pogoda.static-storage.net,DIRECT
+  - DOMAIN-SUFFIX,cdn-vk.net,DIRECT # TEST ######################
+  - GEOSITE,CATEGORY-RU,RU ТРАФИК
+  #- GEOSITE,CATEGORY-GOV-RU,RU ТРАФИК
+  - DOMAIN-SUFFIX,ru,RU ТРАФИК
+  - DOMAIN-SUFFIX,by,RU ТРАФИК
+  - DOMAIN-SUFFIX,xn--p1ai,RU ТРАФИК
+  - GEOIP,RU,RU ТРАФИК,no-resolve
+
+  # НАПРЯМУЮ | IPTV
+  # PEAK TV
+  - DOMAIN-SUFFIX,peakantikli.online,DIRECT            # STREAM
+  # - DOMAIN-SUFFIX,peaktv.info,PROXY FAILOVER 🇪🇺        # PICONS
+  # LIGHT IPTV
+  - DOMAIN-SUFFIX,ott.pp.ru,DIRECT                     # STREAM
+  # - DOMAIN-SUFFIX,lighticons.art,PROXY FAILOVER 🇪🇺     # PICONS
+  # YOSSO TV
+  - DOMAIN-SUFFIX,balelbrus.com,DIRECT                 # STREAM
+  # - DOMAIN-SUFFIX,elbrus.su,PROXY FAILOVER 🇪🇺          # PICONS
+  # TV TEAM
+  - DOMAIN-SUFFIX,team.ga,DIRECT                       # STREAM && PICONS
+  # ZABAVA
+  - DOMAIN-SUFFIX,cdn.ngenix.net,DIRECT    
+
+  # ПРОКСИ ПРАВИЛА | СЕРВИСЫ С ВОЗМОЖНОСТЬЮ ВЫБОРА ИЗ ПРОКСИ ИЛИ НАПРЯМУЮ
+  - GEOSITE,OPENAI,OPENAI
+  - OR,((RULE-SET,discord_domains),(RULE-SET,discord_voiceips,no-resolve)),DISCORD # для исп с discord_domains и discord_voiceips
+  # - GEOSITE,DISCORD,DISCORD # для использования стандартного файла geosite
+  # - RULE-SET,DISCORD,DISCORD # для исп тестового блока discord
+  - RULE-SET,TIKTOK,TIKTOK
+  - GEOSITE,TIDAL,TIDAL
+  - GEOSITE,NETFLIX,NETFLIX
+  - GEOSITE,WHATSAPP,WHATSAPP
+  - GEOSITE,SPOTIFY,SPOTIFY
+  - GEOSITE,INSTAGRAM,INSTAGRAM
+  - GEOSITE,STEAM,STEAM
+  #- GEOSITE,YOUTUBE,YOUTUBE
+  - RULE-SET,youtube_domains,YOUTUBE
+  - GEOSITE,TWITTER,TWITTER
+  - GEOSITE,GOOGLE,GOOGLE
+  - GEOSITE,GOOGLE-GEMINI,GEMINI
+  - GEOSITE,GITHUB,GITHUB
+  - GEOSITE,MICROSOFT,MICROSOFT
+  - GEOSITE,TELEGRAM,TELEGRAM
+  - GEOIP,TELEGRAM,TELEGRAM,no-resolve
+
+  # ПРОВЕРКА IP АДРЕСА | ПРОКСИ СЕРВЕРА
+  - DOMAIN-SUFFIX,2ip.io,2IP.IO
+
+  # ПРОКСИ ПРАВИЛА | СЕРВИСЫ БЕЗ ВОЗМОЖНОСТИ ВЫБОРА ПРОКСИ ИЛИ НАПРЯМУЮ
+  # ПРОКСИ | IPTV
+  - DOMAIN-KEYWORD,ottbill,PROXY FAILOVER 🇪🇺
+  - OR,((DOMAIN-SUFFIX,m3u.in),(DOMAIN-SUFFIX,m3u.ch),(DOMAIN-SUFFIX,m3u.work)),PROXY FAILOVER 🇪🇺
+  # VIVOX / PHASMOPHOBIA VOICE CHAT  
+  - DOMAIN-KEYWORD,vivox,PROXY FAILOVER 🇪🇺
+  - DOMAIN-SUFFIX,vivox.com,PROXY FAILOVER 🇪🇺
+  - DOMAIN-SUFFIX,login.vivox.com,PROXY FAILOVER 🇪🇺
+  - DOMAIN-SUFFIX,voicedev.vivox.com,PROXY FAILOVER 🇪🇺
+  # RIOT GAMES / LEAGUE OF LEGENDS
+  - IP-CIDR,104.160.128.0/19,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,185.40.64.0/22,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,151.106.240.0/20,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,192.64.168.0/21,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,162.249.72.0/21,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,103.219.128.0/22,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,103.240.224.0/22,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,43.229.64.0/22,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,45.250.208.0/22,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,45.7.36.0/22,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,138.0.12.0/23,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,151.106.250.0/23,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,192.207.0.0/24,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,104.160.141.3/32,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,104.160.142.3/32,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,104.160.131.3/32,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,104.160.156.1/32,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,104.160.152.3/32,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,185.40.67.1/32,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,104.160.131.0/24,PROXY FAILOVER 🇪🇺,no-resolve
+  - IP-CIDR,172.65.212.0/24,PROXY FAILOVER 🇪🇺,no-resolve
+
+  # ВЕСЬ ОСТАЛЬНОЙ ТРАФИК | С ВОЗМОЖНОСТЬЮ ВЫБОРА ИЗ ПРОКСИ ИЛИ НАПРЯМУЮ
+  - MATCH,ОСТАЛЬНОЙ ТРАФИК
