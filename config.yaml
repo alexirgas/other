@@ -49,10 +49,13 @@ proxies:
     icon: 'https://www.svgrepo.com/download/365909/estonia.svg' 
     type: vless
     server: YOUR
+    port: YOUR
     uuid: YOUR
+    network: YOUR
     tls: true
     servername: YOUR
     skip-cert-verify: true
+    client-fingerprint: YOUR
     udp: true
     ws-opts:
       path: YOUR
@@ -61,10 +64,13 @@ proxies:
     icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png'
     type: vless
     server: YOUR
+    port: YOUR
     uuid: YOUR
+    network: YOUR
     tls: true
     servername: YOUR
     skip-cert-verify: true
+    client-fingerprint: YOUR
     udp: true
     ws-opts:
       path: YOUR
