@@ -42,31 +42,31 @@ proxies:
   - name: '🇪🇪 СЕРВЕР'
     icon: 'https://www.svgrepo.com/download/365909/estonia.svg'
     type: vless
-    server: bobik.giize.com
+    server: YOUR
     port: 443
-    uuid: e22bfdd1-0a09-488a-bf70-fc68619a8abc
+    uuid: YOUR
     network: ws
     tls: true
-    servername: bobik.giize.com
+    servername: YOUR
     skip-cert-verify: true
     client-fingerprint: chrome
     udp: true
     ws-opts:
-      path: /ws509bd9ec
+      path: YOUR
   - name: '🇩🇪 СЕРВЕР'
     icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png'
     type: vless
-    server: parsek.ooguy.com
+    server: YOUR
     port: 443
-    uuid: e0c163cd-b16e-43a5-b3f0-498d1f011e9e
+    uuid: YOUR
     network: ws
     tls: true
-    servername: parsek.ooguy.com
+    servername: YOUR
     skip-cert-verify: true
     client-fingerprint: chrome
     udp: true
     ws-opts:
-      path: /ws2030ddb8
+      path: YOUR
 
 # СПИСОК ПРОКСИ ГРУПП
 proxy-groups:
