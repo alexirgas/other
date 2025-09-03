@@ -1,0 +1,290 @@
+tproxy-port: 1181
+mixed-port: 1080
+
+# НАСТРОЙКИ ЯДРА
+allow-lan: true
+find-process-mode: 'off'
+mode: rule
+geox-url:
+  geosite: 'https://github.com/jameszeroX/zkeen-domains/releases/latest/download/zkeen.dat'
+  geoip: 'https://github.com/jameszeroX/zkeen-ip/releases/latest/download/zkeenip.dat'
+  geo-auto-update: true
+geo-update-interval: 24
+geodata-mode: true # возможные значения: true/false, true для dat, по умолчанию false - для mmdb
+log-level: silent
+ipv6: false
+external-controller: '0.0.0.0:9090'
+tcp-concurrent: true
+external-ui: './zashboard'
+external-ui-url: 'https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip'
+profile:
+  store-selected: true
+
+# НАСТРОЙКИ СНИФФЕРА
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  sniff:
+    HTTP:
+      ports: [80]
+      override-destination: true
+    TLS:
+      ports: [443]
+    QUIC:
+      ports: [443]
+  
+# СПИСОК ПРОКСИ СЕРВЕРОВ
+proxies:
+  - name: '🇪🇪 VLESS'
+    icon: 'https://www.svgrepo.com/download/365909/estonia.svg'
+    type: vless
+    server: 'YOUR'
+    port: 443
+    uuid: 'YOUR'
+    network: ws
+    tls: true
+    servername: 'YOUR'
+    skip-cert-verify: true
+    client-fingerprint: chrome
+    udp: true
+    ws-opts:
+      path: 'YOUR'
+
+  - name: '🇩🇪 VLESS'
+    icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png'
+    type: vless
+    server: 'YOUR'
+    port: 443
+    uuid: 'YOUR'
+    network: ws
+    tls: true
+    servername: 'YOUR'
+    skip-cert-verify: true
+    client-fingerprint: chrome
+    udp: true
+    ws-opts:
+      path: 'YOUR'
+
+  - name: '🇪🇪 AMNEZIA'
+    icon: 'https://avatars.githubusercontent.com/u/74861536?s=200&v=4'
+    type: direct
+    interface-name: 'nwg0'
+
+# --- ГРУППЫ ПРОКСИ (ПОЛИТИКИ) ---
+proxy-groups:
+  - name: 'PROXY FASTEST'
+    icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/European_Union.png'
+    type: url-test
+    proxies:
+      - '🇪🇪 VLESS'
+      - '🇩🇪 VLESS'
+      - '🇪🇪 AMNEZIA'
+    url: 'http://www.msftncsi.com/ncsi.txt'
+    interval: 60
+    lazy: true
+    tolerance: 50
+
+  - name: 'PROXY FAILOVER'
+    icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png'
+    type: fallback
+    proxies:
+      - 'PROXY FASTEST'
+      - 'DIRECT'
+    url: 'http://www.msftncsi.com/ncsi.txt'
+    interval: 60
+    lazy: true
+
+  - name: 'YOUTUBE'
+    icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png'
+    type: select
+    #include-all: true
+    proxies:
+      - 'DIRECT'
+      - 'PROXY FAILOVER'
+
+# --- ПОДПИСКИ НА ПРАВИЛА МАРШРУТИЗАЦИИ ---
+rule-providers:
+  HAGEZI_PRO:
+    type: http
+    behavior: domain
+    format: mrs
+    path: './rule-providers/hagezi_pro.mrs'
+    url: 'https://github.com/zxc-rv/ad-filter/releases/latest/download/adlist.mrs'
+    interval: 86400
+
+  YOUTUBE_DOMAINS:
+    type: http
+    behavior: domain
+    format: mrs
+    url: 'https://github.com/MetaCubeX/meta-rules-dat/raw/meta/geo/geosite/youtube.mrs'
+    path: './rule-providers/youtube_domains.mrs'
+    interval: 86400
+
+# --- ПРАВИЛА МАРШРУТИЗАЦИИ --- #
+rules:
+### --- ЗАПРЕЩАЮЩИЕ ПРАВИЛА --- ###
+# --- БЛОКИРОВКА | UDP-ТРАФИКА НА 443 ПОРТ С НЕРОССИЙСКИХ IP --- #
+  - 'AND,((NETWORK,UDP),(DST-PORT,443),(GEOIP,!RU)),REJECT'
+
+# VPS | ИСКЛЮЧЕНИЕ | ИЗ БЛОКИРОВКИ РЕКЛАМЫ И ТРЕКЕРОВ | ДЛЯ 192.168.100.99
+  - 'AND,((SRC-IP-CIDR,192.168.100.99/32),(RULE-SET,HAGEZI_PRO)),PROXY FAILOVER'
+
+# --- БЛОКИРОВКА | РЕКЛАМА И ДР. --- #
+  - 'RULE-SET,HAGEZI_PRO,REJECT'
+  - 'DOMAIN-SUFFIX,tracking.ott.yandex.net,REJECT'
+  - 'DOMAIN-SUFFIX,egress.yandex.net,REJECT'
+  - 'DOMAIN-SUFFIX,loveplanet.ru,REJECT'
+  - 'DOMAIN-SUFFIX,mamba.ru,REJECT'
+  - 'DOMAIN-SUFFIX,winningjavaadvanceworking.net,REJECT'
+  - 'DOMAIN-SUFFIX,vietleaftweetsplan.net,REJECT'
+  - 'DOMAIN-SUFFIX,homesgetyour.org,REJECT'
+  - 'DOMAIN-SUFFIX,ad.doubleclick.net,REJECT'
+  - 'DOMAIN-SUFFIX,ads.pinterest.com,REJECT'
+  - 'DOMAIN-SUFFIX,analytics.pinterest.com,REJECT'
+
+######################################################
+######################################################
+######################################################
+##### TEST ###########################################
+# === BLOCK ADS / TRACKERS ===
+
+# --- ADTECH / SSP / AD NETWORKS (low risk) ---
+  - 'DOMAIN-SUFFIX,smartclip.net,REJECT'
+  - 'DOMAIN-SUFFIX,rubiconproject.com,REJECT'
+  - 'DOMAIN-SUFFIX,amazon-adsystem.com,REJECT'
+  - 'DOMAIN-SUFFIX,ad.doubleclick.net,REJECT'
+  - 'DOMAIN-SUFFIX,ads.pinterest.com,REJECT'
+  - 'DOMAIN-SUFFIX,analytics.pinterest.com,REJECT'
+  - 'DOMAIN-SUFFIX,adfox.yandex.ru,REJECT'
+  - 'DOMAIN-SUFFIX,adfstat.yandex.ru,REJECT'
+  - 'DOMAIN-SUFFIX,metrika.yandex.ru,REJECT'
+  - 'DOMAIN-SUFFIX,appmetrica.yandex.ru,REJECT'
+  - 'DOMAIN-SUFFIX,bat.bing.com,REJECT'
+
+# --- SMART-TV / Vendor ad endpoints (may affect TV features; test) ---
+  - 'DOMAIN-SUFFIX,ngfts.lge.com,REJECT'           # LG Smart TV ad endpoint (test)
+  - 'DOMAIN-SUFFIX,us.info.lgsmartad.com,REJECT'   # LG smartad info
+  - 'DOMAIN-SUFFIX,us.ad.lgsmartad.com,REJECT'     # LG ad
+  - 'DOMAIN-SUFFIX,lgsmartad.com,REJECT'
+
+# --- TELEMETRY / ERROR REPORTING / SESSION-REPLAY (safe, only disables telemetry) ---
+  - 'DOMAIN-SUFFIX,cdn.logrocket.io,REJECT'
+  - 'DOMAIN-SUFFIX,logrocket.com,REJECT'
+  - 'DOMAIN-SUFFIX,collect.airbrake.io,REJECT'
+  - 'DOMAIN-SUFFIX,airbrake.io,REJECT'
+  - 'DOMAIN-SUFFIX,api.raygun.com,REJECT'
+  - 'DOMAIN-SUFFIX,api.honeybadger.io,REJECT'
+  - 'DOMAIN-SUFFIX,cdn.rollbar.com,REJECT'
+  - 'DOMAIN-SUFFIX,siftscience.com,REJECT'
+  - 'DOMAIN-SUFFIX,logging.googleapis.com,REJECT'
+  - 'DOMAIN-SUFFIX,errorreporting.googleapis.com,REJECT'
+  - 'DOMAIN-SUFFIX,trace.googleapis.com,REJECT'
+
+######################################################
+######################################################
+######################################################
+
+### --- НАПРЯМУЮ ПРАВИЛА --- ###
+# --- НАПРЯМУЮ | ИСКЛЮЧЕНИЯ| РАЗНОЕ --- #
+  - 'DOMAIN,2ip.ru,DIRECT'                 # размещен за cloudflauer
+  - 'DOMAIN-SUFFIX,usher.ttvnw.net,DIRECT' # TWITCH для 1080p
+  - 'DOMAIN-SUFFIX,gql.twitch.tv,DIRECT'   # TWITCH для 1440p
+
+### --- VPS ПОДКЛЮЧЕНИЯ --- ###
+# ZKEEN DOMAINS #
+  - 'GEOSITE,DOMAINS,PROXY FAILOVER'
+  - 'GEOSITE,OTHER,PROXY FAILOVER'
+  - 'GEOSITE,POLITIC,PROXY FAILOVER'
+# - 'GEOSITE,YOUTUBE,PROXY FAILOVER'
+
+# ZKEEN IP #
+  - 'GEOIP,AKAMAI,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,AMAZON,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,CDN77,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,CLOUDFLARE,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,DIGITALOCEAN,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,DISCORD,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,FASTLY,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,GCORE,PROXY FAILOVER,no-resolve'
+#  - 'GEOIP,GOOGLE,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,HETZNER,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,LINODE,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,META,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,ORACLE,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,OVH,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,TELEGRAM,PROXY FAILOVER,no-resolve'
+  - 'GEOIP,VULTR,PROXY FAILOVER,no-resolve'
+#  - 'GEOIP,YOUTUBE,PROXY FAILOVER,no-resolve'
+
+# РАЗНОЕ #
+  - 'DOMAIN-KEYWORD,ottbill,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,myip.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,2ip.io,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,ipwhois.app,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,ipwho.is,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,api.ip.sb,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,ipapi.co,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,ipinfo.io,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,files.catbox.moe,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,warpgen.net,PROXY FAILOVER'
+  - 'DOMAIN,rutor.org,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,jut.su,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,jut-su.net,PROXY FAILOVER'
+  - 'DOMAIN,dns.sb,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,kira.art,PROXY FAILOVER'  # AI PHOTOSHOP
+  - 'DOMAIN-SUFFIX,iptvin.ru,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,denms.ru,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,browserleaks.com,PROXY FAILOVER'
+
+
+# Whatsapp // открывам порты xkeen -ap 443,3478,46420
+# данные в закоментированных строках прописаны в zkeen базах META
+  - 'SRC-IP-ASN,AS32934,PROXY FAILOVER,no-resolve'
+  - 'SRC-IP-ASN,AS11917,PROXY FAILOVER,no-resolve'
+#  - 'SRC-IP-CIDR,157.240.0.0/16,PROXY FAILOVER,no-resolve'
+#  - 'SRC-IP-CIDR,69.63.176.0/20,PROXY FAILOVER,no-resolve'
+#  - 'SRC-IP-CIDR,66.220.144.0/20,PROXY FAILOVER,no-resolve'
+#  - 'SRC-IP-CIDR,31.13.24.0/21,PROXY FAILOVER,no-resolve'
+#  - 'SRC-IP-CIDR,31.13.64.0/18,PROXY FAILOVER,no-resolve'
+  - 'SRC-IP-CIDR,31.13.80.0/20,PROXY FAILOVER,no-resolve'
+
+# --- VIVOX / Phasmophobia Voice Chat ---
+  - 'DOMAIN-KEYWORD,vivox,PROXY FAILOVER'
+  - 'IP-CIDR,85.236.96.0/21,PROXY FAILOVER,no-resolve'
+
+# --- Riot Games / League of Legends ---
+  - 'IP-CIDR,104.160.128.0/19,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,185.40.64.0/22,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,151.106.240.0/20,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,192.64.168.0/21,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,162.249.72.0/21,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,103.219.128.0/22,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,103.240.224.0/22,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,43.229.64.0/22,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,45.250.208.0/22,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,45.7.36.0/22,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,138.0.12.0/23,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,151.106.250.0/23,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,192.207.0.0/24,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,104.160.141.3/32,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,104.160.142.3/32,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,104.160.131.3/32,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,104.160.156.1/32,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,104.160.152.3/32,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,185.40.67.1/32,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,104.160.131.0/24,PROXY FAILOVER,no-resolve'
+  - 'IP-CIDR,172.65.212.0/24,PROXY FAILOVER,no-resolve'
+
+# --- DeepMind / Gemini / Bard / GITHUB ---
+  - 'DOMAIN-SUFFIX,copilot.microsoft.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,githubcopilot.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,copilot-proxy.githubusercontent.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,origin-tracker.githubusercontent.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,api.github.com,PROXY FAILOVER'
+
+### --- С РЕЖИМОМ РУЧНОГО ПЕРЕКЛЮЧЕНИЯ --- ###
+  - 'RULE-SET,YOUTUBE_DOMAINS,YOUTUBE'
+
+### --- НАПРЯМУЮ | ВСЕ ОСТАЛЬНОЕ --- ###
+  - 'MATCH,DIRECT'
