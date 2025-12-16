@@ -1,0 +1,158 @@
+# ОСНОВНАЯ КОНФИГУРАЦИЯ
+tproxy-port:               1181
+socks-port:                1080             # socks сервер 192.168.100.1:1080
+allow-lan:                 true
+find-process-mode:         off
+mode:                      rule
+log-level:                 silent
+ipv6:                      false
+external-controller:       '0.0.0.0:9090'
+# unified-delay:           true             # если не закоментирована, отображается очень низкий ping
+tcp-concurrent:            true
+
+geox-url:
+  geosite:                 'https://github.com/jameszeroX/zkeen-domains/releases/latest/download/zkeen.dat'
+  geoip:                   'https://github.com/jameszeroX/zkeen-ip/releases/latest/download/zkeenip.dat'
+geo-auto-update:           true
+geo-update-interval:       72
+geodata-mode:              true
+
+global-client-fingerprint: firefox
+external-ui:               './zashboard'
+external-ui-url:           'https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip'
+profile:                   { store-selected: true }
+
+sniffer:                   { enable: true, force-dns-mapping: true, parse-pure-ip: true, sniff: { HTTP: {}, TLS: {}, QUIC: {} } }
+
+# ЯКОРЯ
+anchors:
+  a1: &provider-template   { type: http, health-check: { enable: true, url: 'http://www.gstatic.com/generate_204', interval: 300, timeout: 8000, lazy: true, expected-status: 204 }, override: { tfo: true, mptcp: true, udp: true }, interval: 3600 }
+  a2: &group-template      { url: 'http://www.gstatic.com/generate_204',     interval: 60, lazy: true }
+# a3: &domain              { type: http,  format: mrs,  behavior: domain,    interval: 86400 }
+  a4: &ipcidr              { type: http,  format: mrs,  behavior: ipcidr,    interval: 86400 }
+# a5: &classical           { type: http,  format: text, behavior: classical, interval: 86400 }
+# a6: &inline              { type: inline,              behavior: classical }
+# a7: &ipcidr-text         { type: http,  format: text, behavior: ipcidr,    interval: 86400 }
+
+proxies:
+  - { name: '🇪🇪 AMNEZIA',  icon: 'https://amnezia.org/img/logos/logo-a-sym.svg', type: direct, interface-name: 'nwg0' }
+# - { name: '🇩🇪 HYSTERIA', type: hysteria2, server: your domain,  port: 52000, password: 'your paswrd', sni: your domain,  skip-cert-verify: true }
+# - { name: '🇪🇪 HYSTERIA', type: hysteria2, server: your domain,  port: 53000, password: 'your paswrd', sni: your domain,  skip-cert-verify: true }
+
+proxy-providers:
+  EE_sub: { <<: *provider-template, url: 'your sub url' }
+  DE_sub: { <<: *provider-template, url: 'your sub url' }
+
+proxy-groups:
+# - { name: 'PROXY FAILOVER', <<: *group-template, icon: 'https://i.ibb.co/5hR4KYXy/server-failover.png',                           type: fallback, proxies: ['🇪🇪 HYSTERIA', '🇩🇪 HYSTERIA', '🇪🇪 AMNEZIA', 'PROXY FASTEST', 'DIRECT'],     max-allowed-delay: 300 }
+  - { name: 'PROXY FAILOVER', <<: *group-template, icon: 'https://i.ibb.co/5hR4KYXy/server-failover.png',                           type: fallback, proxies: ['🇪🇪 AMNEZIA', 'PROXY FASTEST', 'DIRECT'],                                  max-allowed-delay: 300 }
+# - { name: 'PROXY FASTEST',  <<: *group-template, icon: 'https://cdn-icons-png.flaticon.com/512/1455/1455324.png',                 type: url-test, use:     ['EE_sub', 'DE_sub'], proxies: ['🇪🇪 HYSTERIA', '🇩🇪 HYSTERIA', '🇪🇪 AMNEZIA'], tolerance: 50 }
+  - { name: 'PROXY FASTEST',  <<: *group-template, icon: 'https://cdn-icons-png.flaticon.com/512/1455/1455324.png',                 type: url-test, use:     ['EE_sub', 'DE_sub'], proxies: ['🇪🇪 AMNEZIA'],                              tolerance: 50 }
+  - { name: 'VLESS PROXY',    <<: *group-template, icon: 'https://i.ibb.co/WWd9j19V/18240592.png',                                  type: url-test, use:     ['EE_sub', 'DE_sub'],                                                       tolerance: 50, interval: 300 }
+  - { name: 'AI',                                  icon: 'https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Bot.png',   type: select,   proxies: ['VLESS PROXY', 'PROXY FAILOVER', 'DIRECT'] }
+  - { name: 'YOUTUBE',                             icon: 'https://cdn-icons-png.flaticon.com/512/270/270834.png',                   type: select,   proxies: ['DIRECT', 'PROXY FAILOVER', 'VLESS PROXY'] }
+  - { name: 'LOL',                                 icon: 'https://i.ibb.co/s98HTX1Y/Lo-L-Symbol.png',                               type: select,   proxies: ['PROXY FAILOVER', 'VLESS PROXY', 'DIRECT'] }
+  - { name: 'ADS BLOCK',                           icon: 'https://i.ibb.co/ymfqTJ3c/NO-ADSSS.png',                                  type: select,   proxies: ['REJECT', 'DIRECT'] }
+  - { name: 'QUIC',                                icon: 'https://github.com/zxc-rv/assets/raw/main/group-icons/quic.png',          type: select,   proxies: ['REJECT', 'DIRECT'] }
+  - { name: 'OTHER',                               icon: 'https://i.ibb.co/bMW500kb/notification-icon-meta-logo-icon-size-512.png', type: select,   proxies: ['DIRECT', 'PROXY FAILOVER', 'VLESS PROXY'] }
+
+rule-providers:
+# CATEGORY-AI@DOMAIN: { <<: *domain,    url: 'https://github.com/MetaCubeX/meta-rules-dat/raw/meta/geo/geosite/category-ai-!cn.mrs' }
+# SMART_TV_BLOCK:     { <<: *classical, url: 'https://raw.githubusercontent.com/hkamran80/blocklists/main/smart-tv.txt' }
+# HAGEZI_PRO:         { <<: *domain,    url: 'https://github.com/zxc-rv/ad-filter/releases/latest/download/adlist.mrs' }
+# OISD_BIG:           { <<: *domain,    url: 'https://github.com/legiz-ru/mihomo-rule-sets/raw/main/oisd/big.mrs' }
+  LOL@ipcidr:         { <<: *ipcidr,    url: 'https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/LOL_ips.list' }
+
+rules:
+  # ЗАПРЕЩАЮЩИЕ ПРАВИЛА (REJECT / ADS BLOCK)
+  # Блокировка UDP-трафика на 443 порт с нероссийских IP (анти-QUIC)
+  - 'AND,((NETWORK,UDP),(DST-PORT,443),(GEOIP,!RU)),QUIC'
+
+  # VPS | ИСКЛЮЧЕНИЕ | ИЗ БЛОКИРОВКИ РЕКЛАМЫ И ТРЕКЕРОВ | ДЛЯ IPHONE LENA
+  # - 'AND,((SRC-IP-CIDR,192.168.100.99/32),(OR,(RULE-SET,HAGEZI_PRO),(RULE-SET,SMART_TV_BLOCK),(RULE-SET,OISD_BIG))),PROXY FAILOVER'
+
+  # БЛОКИРОВКА | РЕКЛАМА И ДР.
+  # - 'RULE-SET,SMART_TV_BLOCK,ADS BLOCK'
+  # - 'RULE-SET,HAGEZI_PRO,ADS BLOCK'
+  # - 'RULE-SET,OISD_BIG,ADS BLOCK'
+  - 'DOMAIN-SUFFIX,tracking.ott.yandex.net,ADS BLOCK'
+  - 'DOMAIN-SUFFIX,egress.yandex.net,ADS BLOCK'
+  # - 'DOMAIN-SUFFIX,loveplanet.ru,ADS BLOCK'
+  # - 'DOMAIN-SUFFIX,mamba.ru,ADS BLOCK'
+
+  # ПРАВИЛА, ИДУЩИЕ НАПРЯМУЮ (DIRECT)
+  # Исключения | Разное
+  - 'DOMAIN,2ip.ru,DIRECT' # размещен за cloudflare
+  - 'DOMAIN-SUFFIX,tv.ott.net.ru,DIRECT' # IPTV LIGHT
+  - 'DOMAIN-SUFFIX,only4.tv,DIRECT' # IPTV 1CENT
+  - 'DOMAIN-SUFFIX,rt-ct-vrzh-htlive.cdn.ngenix.net,DIRECT' # IPTV RT
+  # TV.TEAM (потоки и speedtest)
+  - 'DOMAIN-SUFFIX,tv.in,DIRECT'
+  - 'DOMAIN-SUFFIX,speed.tv.team,DIRECT'
+  - 'DOMAIN-SUFFIX,team.ga,DIRECT'
+  - 'DOMAIN-SUFFIX,troya.info,DIRECT'
+
+  # ИИ
+  # - 'RULE-SET,CATEGORY-AI@DOMAIN,AI'
+
+  # ПРОКСИРУЕМЫЕ ДОМЕНЫ
+  - 'GEOSITE,DOMAINS,PROXY FAILOVER'
+  - 'GEOSITE,OTHER,VLESS PROXY' # PROXY FAILOVER' # также содержит различные нейросети
+  - 'GEOSITE,POLITIC,PROXY FAILOVER'
+  # - 'GEOSITE,YOUTUBE,PROXY FAILOVER'
+  - 'GEOSITE,YOUTUBE,YOUTUBE'
+
+  # ПРОКСИРУЕМЫЕ IP
+  - 'GEOIP,AKAMAI,PROXY FAILOVER'
+  # - 'OR,((DOMAIN-SUFFIX,gql.twitch.tv),(DOMAIN-SUFFIX,usher.ttvnw.net)),PROXY FAILOVER' # Разблокировка высокого качества на Twitch.tv
+  - 'GEOIP,AMAZON,PROXY FAILOVER' # TWITCH INCLUDE
+  - 'GEOIP,AZURE,PROXY FAILOVER'
+  - 'GEOIP,CDN77,PROXY FAILOVER'
+  - 'GEOIP,CLOUDFLARE,PROXY FAILOVER'
+  - 'GEOIP,COLOCROSSING,PROXY FAILOVER'
+  - 'GEOIP,CONTABO,PROXY FAILOVER'
+  - 'GEOIP,DIGITALOCEAN,PROXY FAILOVER'
+  - 'GEOIP,DISCORD,PROXY FAILOVER' # VLESS PROXY' # drover-v0.8
+  - 'GEOIP,FASTLY,PROXY FAILOVER'
+  - 'GEOIP,GCORE,PROXY FAILOVER'
+  # - 'GEOIP,GOOGLE,PROXY FAILOVER'
+  - 'GEOIP,HETZNER,PROXY FAILOVER'
+  - 'GEOIP,LINODE,PROXY FAILOVER'
+  - 'GEOIP,MEGA,PROXY FAILOVER'
+  - 'GEOIP,META,VLESS PROXY' # PROXY FAILOVER'
+  - 'GEOIP,ORACLE,PROXY FAILOVER'
+  - 'GEOIP,OVH,PROXY FAILOVER'
+  - 'GEOIP,SCALEWAY,PROXY FAILOVER'
+  - 'GEOIP,TELEGRAM,PROXY FAILOVER'
+  - 'GEOIP,VULTR,PROXY FAILOVER'
+  # - 'GEOIP,YOUTUBE,PROXY FAILOVER'
+
+  # ДОПОЛНИТЕЛЬНЫЕ ПРАВИЛА
+  # РАЗНОЕ
+  - 'DOMAIN-SUFFIX,ottbill.cc,PROXY FAILOVER'
+  - 'DOMAIN,sharavoz.space,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,myip.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,2ip.io,PROXY FAILOVER'
+  # - 'DOMAIN-SUFFIX,whoer.net,🇩🇪 HYSTERIA'
+  # - 'DOMAIN-SUFFIX,ipwho.is,🇪🇪 AMNEZIA' # VLESS PROXY' # PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,ip.sb,PROXY FAILOVER'
+  # - 'DOMAIN-SUFFIX,ipip.net,🇪🇪 AMNEZIA' # VLESS PROXY' # PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,files.catbox.moe,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,warpgen.net,PROXY FAILOVER'
+  - 'DOMAIN,rutor.org,PROXY FAILOVER'
+  - 'DOMAIN,dns.sb,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,kira.art,PROXY FAILOVER' # AI PHOTOSHOP
+  - 'DOMAIN-SUFFIX,ottclub.tv,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,dreamerscast.com,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,tlauncher.ru,PROXY FAILOVER'
+  - 'DOMAIN-SUFFIX,justpaste.it,PROXY FAILOVER'
+
+  # VIVOX / Phasmophobia Voice Chat
+  - 'DOMAIN-KEYWORD,vivox,PROXY FAILOVER'
+  - 'IP-CIDR,85.236.96.0/21,PROXY FAILOVER'
+
+  # Riot Games / League of Legends
+  - 'RULE-SET,LOL@ipcidr,LOL'
+
+  # ЗАВЕРШАЮЩЕЕ ПРАВИЛО
+  - 'MATCH,OTHER'
