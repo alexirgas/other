@@ -27,6 +27,8 @@ anchors:
   a5: &classical           { type: http,  format: text, behavior: classical,    interval: 86400 }
   a6: &inline              { type: inline,              behavior: classical }
   a7: &proxies             { type: vless, port: 443, network: ws, tls: true, skip-cert-verify: true, client-fingerprint: chrome, udp: true, tfo: true, mptcp: true }
+  a8: &domain-text         { type: http,  format: text, behavior: domain,       interval: 86400 }
+
 
 proxies:
   - { name: 🇪🇪 AMNEZIA,  type: direct, interface-name: nwg0 }
@@ -61,7 +63,7 @@ rule-providers:
   custom_failover:          { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_failover.list }
   custom_vless:             { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_vless.list }
   discord@classical:        { <<: *classical,    url: https://github.com/zxc-rv/assets/raw/main/rules/discord.list }
-  discord-anton@ipcidr:     { <<: *ipcidr,       url: https://github.com/Anton111111/rule-lists/releases/latest/download/discord_ips.list }
+  discord-anton@ipcidr:     { <<: *classical,    url: https://github.com/Anton111111/rule-lists/releases/latest/download/discord_ips.list }
 
 # --- DOMAIN ---
   akamai@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/akamai.mrs }
@@ -104,7 +106,7 @@ rule-providers:
   scaleway@ipcidr:          { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/scaleway@ipcidr.mrs }
   telegram@ipcidr:          { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/telegram@ipcidr.mrs }
   vultr@ipcidr:             { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/vultr@ipcidr.mrs }
-  smart_tv_block:           { <<: *ipcidr,       url: https://raw.githubusercontent.com/hkamran80/blocklists/main/smart-tv.txt }
+  smart_tv_block:           { <<: *domain-text,  url: https://raw.githubusercontent.com/hkamran80/blocklists/main/smart-tv.txt }
 
 rules:
 # ЗАПРЕЩАЮЩИЕ
