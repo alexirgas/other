@@ -1,0 +1,154 @@
+# ОСНОВНАЯ КОНФИГУРАЦИЯ
+tproxy-port:               1181
+socks-port:                1080                             # socks сервер IP роутера:1080
+allow-lan:                 true
+find-process-mode:         off
+mode:                      rule
+log-level:                 silent
+ipv6:                      false
+external-controller:       0.0.0.0:9090
+# unified-delay:           true                             # если параметр активирован, то отображается очень низкий ping
+tcp-concurrent:            true
+
+# global-client-fingerprint: firefox
+external-ui:               ./ui
+external-ui-url:           https://github.com/Zephyruso/zashboard/releases/latest/download/dist.zip
+profile:                   { store-selected: true }
+
+# sniffer:                   { enable: true, force-dns-mapping: true, parse-pure-ip: true, sniff: { HTTP: {}, TLS: {}, QUIC: {} } }
+## sniffer:                   { enable: true, force-dns-mapping: true, parse-pure-ip: true, ports: [80, 443], sniff: { HTTP: { ports: [80, 8080-8880], override-destination: true }, TLS: { ports: [443, 8443] }, QUIC: { ports: [443, 8443] } } }
+sniffer:                   { enable: true, force-dns-mapping: true, parse-pure-ip: true, ports: [80, 443], skip-domain: ['Telegram', 'telegram.org', '+.telegram.org'], sniff: { HTTP: { ports: [80, 8080-8880], override-destination: true }, TLS: { ports: [443, 8443] } } }
+
+anchors:
+  a1: &provider-template   { type: http, health-check: { enable: true, url: https://www.gstatic.com/generate_204, interval: 300, timeout: 2000, lazy: false, expected-status: 204 }, override: { tfo: true, mptcp: true, udp: true }, interval: 3600 }
+  a2: &proxy-template      { url: http://www.gstatic.com/generate_204,       interval: 60, lazy: false }
+  a3: &domain              { type: http,  format: mrs,  behavior: domain,       interval: 86400 }
+  a4: &ipcidr              { type: http,  format: mrs,  behavior: ipcidr,       interval: 86400 }
+  a5: &classical           { type: http,  format: text, behavior: classical,    interval: 86400 }
+  a6: &inline              { type: inline,              behavior: classical }
+  a7: &proxies             { type: vless, port: 443, network: ws, tls: true, skip-cert-verify: true, client-fingerprint: chrome, udp: true, tfo: true, mptcp: true }
+
+proxies:
+  - { name: 🇪🇪 AMNEZIA,  type: direct, interface-name: nwg0 }
+  - { name: 🇫🇮 AMNEZIA,  type: direct, interface-name: nwg1 }
+# - { name: 🇩🇪 HYSTERIA, type: hysteria2, server: YOUR_SERVER_DE, port: 52000, password: YOUR_PASSWORD, sni: YOUR_SERVER_DE, skip-cert-verify: true }
+# - { name: 🇪🇪 HYSTERIA, type: hysteria2, server: YOUR_SERVER_EE,  port: 53000, password: YOUR_PASSWORD, sni: YOUR_SERVER_EE,  skip-cert-verify: true }
+  - { name: 🇪🇪 VLESS,    <<: *proxies, server: YOUR_SERVER_EE,  uuid: YOUR_UUID_1, servername: YOUR_SERVER_EE,  ws-opts: { path: /YOUR_WS_PATH_1 } }
+  - { name: 🇩🇪 VLESS,    <<: *proxies, server: YOUR_SERVER_DE,  uuid: YOUR_UUID_2, servername: YOUR_SERVER_DE,  ws-opts: { path: /YOUR_WS_PATH_2 } }
+  - { name: 🇫🇮 VLESS,    <<: *proxies, server: YOUR_SERVER_FI,   uuid: YOUR_UUID_3, servername: YOUR_SERVER_FI,   ws-opts: { path: /YOUR_WS_PATH_3 } }
+
+proxy-providers:
+# EE_sub: { <<: *provider-template, url: https://YOUR_SERVER_EE/sub_path/TOKEN }
+# DE_sub: { <<: *provider-template, url: https://YOUR_SERVER_DE/sub_path/TOKEN }
+
+proxy-groups:
+  - { name: PROXY FAILOVER, <<: *proxy-template, icon: https://i.ibb.co/5hR4KYXy/server-failover.png,                           type: fallback, proxies: [PROXY FASTEST, DIRECT], max-allowed-delay: 300 }
+# - { name: PROXY FASTEST,  <<: *proxy-template, icon: https://cdn-icons-png.flaticon.com/512/1455/1455324.png,                 type: url-test, use:     [EE_sub, DE_sub], proxies: [🇪🇪 HYSTERIA, 🇩🇪 HYSTERIA, 🇪🇪 AMNEZIA, 🇫🇮 AMNEZIA],               tolerance: 50 }
+# - { name: PROXY FASTEST,  <<: *proxy-template, icon: https://cdn-icons-png.flaticon.com/512/1455/1455324.png,                 type: url-test, use:     [EE_sub, DE_sub], proxies: [🇪🇪 AMNEZIA, 🇫🇮 AMNEZIA],                                          tolerance: 50 }
+# - { name: PROXY FASTEST,  <<: *proxy-template, icon: https://cdn-icons-png.flaticon.com/512/1455/1455324.png,                 type: url-test, proxies: [🇪🇪 AMNEZIA, 🇫🇮 AMNEZIA, 🇪🇪 VLESS, 🇩🇪 VLESS],                                                 tolerance: 50 }
+# - { name: VLESS PROXY,    <<: *proxy-template, icon: https://i.ibb.co/WWd9j19V/18240592.png,                                  type: url-test, use:     [EE_sub, DE_sub],                                                                                 interval: 300,  tolerance: 50 }
+# - { name: VLESS PROXY,    <<: *proxy-template, icon: https://i.ibb.co/WWd9j19V/18240592.png,                                  type: url-test, proxies: [🇪🇪 VLESS, 🇩🇪 VLESS],                                                                          interval: 300,  tolerance: 50 }
+  - { name: PROXY FASTEST,  <<: *proxy-template, icon: https://cdn-icons-png.flaticon.com/512/1455/1455324.png,                 type: url-test, proxies: [🇪🇪 AMNEZIA, 🇫🇮 AMNEZIA, 🇪🇪 VLESS, 🇩🇪 VLESS, 🇫🇮 VLESS], tolerance: 50 }
+  - { name: VLESS PROXY,    <<: *proxy-template, icon: https://i.ibb.co/WWd9j19V/18240592.png,                                  type: url-test, proxies: [🇪🇪 VLESS, 🇩🇪 VLESS, 🇫🇮 VLESS], interval: 300,  tolerance: 50 }
+  - { name: YOUTUBE,                             icon: https://cdn-icons-png.flaticon.com/512/270/270834.png,                   type: select,   proxies: [DIRECT, PROXY FAILOVER, VLESS PROXY] }
+  - { name: ADS BLOCK,                           icon: https://i.ibb.co/ymfqTJ3c/NO-ADSSS.png,                                  type: select,   proxies: [REJECT, DIRECT] }
+  - { name: QUIC,                                icon: https://github.com/zxc-rv/assets/raw/main/group-icons/quic.png,          type: select,   proxies: [REJECT, DIRECT] }
+  - { name: OTHER,                               icon: https://i.ibb.co/bMW500kb/notification-icon-meta-logo-icon-size-512.png, type: select,   proxies: [DIRECT, PROXY FAILOVER, VLESS PROXY] }
+
+rule-providers:
+# --- CLASSICAL ---
+  custom_direct:            { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_direct.list }
+  custom_failover:          { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_failover.list }
+  custom_vless:             { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_vless.list }
+  discord@classical:        { <<: *classical,    url: https://github.com/zxc-rv/assets/raw/main/rules/discord.list }
+# --- DOMAIN ---
+  akamai@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/akamai.mrs }
+  amazon@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/amazon.mrs }
+  category-ai@domain:       { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs }
+  category-ru@domain:       { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ru.mrs }
+  cloudflare@domain:        { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cloudflare.mrs }
+  digitalocean@domain:      { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/digitalocean.mrs }
+  fastly@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/fastly.mrs }
+  github@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.mrs }
+  google@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs }
+  hetzner@domain:           { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hetzner.mrs }
+  meta@domain:              { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/meta.mrs }
+  oracle@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/oracle.mrs }
+  reddit@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/reddit.mrs }
+  spotify@domain:           { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/spotify.mrs }
+  steam@domain:             { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs }
+  telegram@domain:          { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.mrs }
+  twitch@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitch.mrs }
+  twitter@domain:           { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/twitter.mrs }
+  youtube@domain:           { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs }
+  adlist@domain:            { <<: *domain,       url: https://github.com/zxc-rv/ad-filter/releases/latest/download/adlist.mrs }
+  oisd_big:                 { <<: *domain,       url: https://github.com/legiz-ru/mihomo-rule-sets/raw/main/oisd/big.mrs }
+  refilter@domain:          { <<: *domain,       url: https://github.com/legiz-ru/mihomo-rule-sets/raw/main/re-filter/domain-rule.mrs }
+
+# --- IP-CIDR ---
+  akamai@ipcidr:            { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/akamai@ipcidr.mrs }
+  amazon@ipcidr:            { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/amazon@ipcidr.mrs }
+  category-ru@ipcidr:       { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/ru@ipcidr.mrs }
+  cdn77@ipcidr:             { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/cdn77@ipcidr.mrs }
+  cloudflare@ipcidr:        { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/cloudflare@ipcidr.mrs }
+  digitalocean@ipcidr:      { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/digitalocean@ipcidr.mrs }
+  fastly@ipcidr:            { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/fastly@ipcidr.mrs }
+  gcore@ipcidr:             { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/gcore@ipcidr.mrs }
+  google@ipcidr:            { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/google@ipcidr.mrs }
+  hetzner@ipcidr:           { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/hetzner@ipcidr.mrs }
+  meta@ipcidr:              { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/meta@ipcidr.mrs }
+  oracle@ipcidr:            { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/oracle@ipcidr.mrs }
+  ovh@ipcidr:               { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/ovh@ipcidr.mrs }
+  scaleway@ipcidr:          { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/scaleway@ipcidr.mrs }
+  telegram@ipcidr:          { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/telegram@ipcidr.mrs }
+  vultr@ipcidr:             { <<: *ipcidr,       url: https://github.com/zxc-rv/zkeenip-rulesets/releases/latest/download/vultr@ipcidr.mrs }
+  smart_tv_block:           { <<: *ipcidr,       url: https://raw.githubusercontent.com/hkamran80/blocklists/main/smart-tv.txt }
+
+rules:
+# ЗАПРЕЩАЮЩИЕ
+  - AND,         ((NETWORK,UDP),     (DST-PORT,443),                  (NOT,((RULE-SET,category-ru@ipcidr)))),                       QUIC
+# БЛОКИРОВКА | РЕКЛАМА И ДР. | за ИСКЛЮЧЕНИЕМ USER_DEVICE 192.168.1.XX
+##  - AND,       ((DOMAIN-SUFFIX,    egress.yandex.net),              (NOT,((SRC-IP-CIDR,192.168.1.XX/32)))),                     ADS BLOCK
+##  - AND,       ((DOMAIN-SUFFIX,    tracking.ott.yandex.net),        (NOT,((SRC-IP-CIDR,192.168.1.XX/32)))),                     ADS BLOCK
+##  - AND,       ((RULE-SET,         oisd_big),                       (NOT,((SRC-IP-CIDR,192.168.1.XX/32)))),                     ADS BLOCK
+##  - AND,       ((RULE-SET,         smart_tv_block),                 (NOT,((SRC-IP-CIDR,192.168.1.XX/32)))),                     ADS BLOCK
+##  - AND,       ((RULE-SET,         adlist@domain),                  (NOT,((SRC-IP-CIDR,192.168.1.XX/32)))),                     ADS BLOCK
+# СПЕЦИАЛЬНЫЕ ПРАВИЛА (РАЗБЛОКИРОВКА TWITCH 4K)
+  - OR,          ((DOMAIN-SUFFIX,    gql.twitch.tv),                  (DOMAIN-SUFFIX,usher.ttvnw.net)),                             PROXY FAILOVER
+# НАПРЯМУЮ
+  - RULE-SET,    category-ru@domain,                                                                                                DIRECT
+  - RULE-SET,    category-ru@ipcidr,                                                                                                DIRECT
+  - RULE-SET,    custom_direct,                                                                                                     DIRECT
+  - RULE-SET,    steam@domain,                                                                                                      DIRECT
+  - RULE-SET,    twitch@domain,                                                                                                     DIRECT
+# ПЕРЕКЛЮЧАТЕЛЬ
+  - RULE-SET,    youtube@domain,                                                                                                    YOUTUBE
+# ПРОКСИ - VLESS PROXY
+  - RULE-SET,    category-ai@domain,                                                                                                VLESS PROXY
+  - RULE-SET,    custom_vless,                                                                                                      VLESS PROXY
+  - OR,          ((RULE-SET,         meta@domain),                    (RULE-SET,meta@ipcidr,no-resolve)),                           VLESS PROXY
+# ПРОКСИ - PROXY FAILOVER
+  - OR,          ((RULE-SET,         akamai@domain),                  (RULE-SET,akamai@ipcidr)),                                    PROXY FAILOVER
+  - OR,          ((RULE-SET,         amazon@domain),                  (RULE-SET,amazon@ipcidr)),                                    PROXY FAILOVER
+  - RULE-SET,    cdn77@ipcidr,                                                                                                      PROXY FAILOVER
+  - OR,          ((RULE-SET,         cloudflare@domain),              (RULE-SET,cloudflare@ipcidr)),                                PROXY FAILOVER
+  - RULE-SET,    custom_failover,                                                                                                   PROXY FAILOVER
+  - OR,          ((RULE-SET,         digitalocean@domain),            (RULE-SET,digitalocean@ipcidr)),                              PROXY FAILOVER
+  - RULE-SET,    discord@classical,                                                                                                 PROXY FAILOVER
+  - OR,          ((RULE-SET,         fastly@domain),                  (RULE-SET,fastly@ipcidr)),                                    PROXY FAILOVER
+  - RULE-SET,    gcore@ipcidr,                                                                                                      PROXY FAILOVER
+  - RULE-SET,    github@domain,                                                                                                     PROXY FAILOVER
+#  - OR,         ((RULE-SET,         google@domain),                  (RULE-SET,google@ipcidr)),                                    PROXY FAILOVER
+  - OR,          ((RULE-SET,         hetzner@domain),                 (RULE-SET,hetzner@ipcidr)),                                   PROXY FAILOVER
+  - OR,          ((RULE-SET,         oracle@domain),                  (RULE-SET,oracle@ipcidr)),                                    PROXY FAILOVER
+  - RULE-SET,    ovh@ipcidr,                                                                                                        PROXY FAILOVER
+  - RULE-SET,    reddit@domain,                                                                                                     PROXY FAILOVER
+  - RULE-SET,    refilter@domain,                                                                                                   PROXY FAILOVER
+  - RULE-SET,    scaleway@ipcidr,                                                                                                   PROXY FAILOVER
+  - RULE-SET,    spotify@domain,                                                                                                    PROXY FAILOVER
+  - OR,          ((RULE-SET,         telegram@domain),                (RULE-SET,telegram@ipcidr,no-resolve)),                       PROXY FAILOVER
+  - RULE-SET,    twitter@domain,                                                                                                    PROXY FAILOVER
+  - RULE-SET,    vultr@ipcidr,                                                                                                      PROXY FAILOVER
+
+# ЗАВЕРШАЮЩЕЕ ПРАВИЛО
+  - MATCH,                                                                                                                          OTHER
