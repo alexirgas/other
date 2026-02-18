@@ -61,6 +61,8 @@ rule-providers:
   custom_failover:          { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_failover.list }
   custom_vless:             { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_vless.list }
   discord@classical:        { <<: *classical,    url: https://github.com/zxc-rv/assets/raw/main/rules/discord.list }
+  discord-anton@ipcidr:     { <<: *ipcidr,       url: https://github.com/Anton111111/rule-lists/releases/latest/download/discord_ips.list }
+
 # --- DOMAIN ---
   akamai@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/akamai.mrs }
   amazon@domain:            { <<: *domain,       url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/amazon.mrs }
@@ -135,6 +137,7 @@ rules:
   - RULE-SET,    custom_failover,                                                                                                   PROXY FAILOVER
   - OR,          ((RULE-SET,         digitalocean@domain),            (RULE-SET,digitalocean@ipcidr)),                              PROXY FAILOVER
   - RULE-SET,    discord@classical,                                                                                                 PROXY FAILOVER
+  - RULE-SET,    discord-anton@ipcidr,                                                                                              PROXY FAILOVER,no-resolve
   - OR,          ((RULE-SET,         fastly@domain),                  (RULE-SET,fastly@ipcidr)),                                    PROXY FAILOVER
   - RULE-SET,    gcore@ipcidr,                                                                                                      PROXY FAILOVER
   - RULE-SET,    github@domain,                                                                                                     PROXY FAILOVER
