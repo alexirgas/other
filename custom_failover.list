@@ -8,10 +8,11 @@ DOMAIN-SUFFIX,justpaste.it
 DOMAIN-SUFFIX,myip.com# IP
 DOMAIN-SUFFIX,myip2.ru# IP
 DOMAIN-SUFFIX,ottclub.tv
-DOMAIN-SUFFIX, rutor.org
-DOMAIN, sharavoz.space
+DOMAIN-SUFFIX,rutor.org
+DOMAIN,sharavoz.space
 DOMAIN-SUFFIX,tlauncher.ru
 DOMAIN-SUFFIX,ugoos.com
 DOMAIN-SUFFIX,clubtone.do.am      # клубная музыка
-DOMAIN-KEYWORD, vivox             # VIVOX / Phasmophobia
+DOMAIN-KEYWORD,vivox              # VIVOX / Phasmophobia
 IP-CIDR,85.236.96.0/21            # VIVOX / Phasmophobia
+DOMAIN-SUFFIX,ibb.co
