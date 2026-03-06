@@ -1,7 +1,9 @@
 DOMAIN-SUFFIX,ipip.net
 DOMAIN-SUFFIX,ipwho.is
-DOMAIN-SUFFIX,kira.art                  # AI PHOTOSHOP
-DOMAIN-SUFFIX,uzuk.pro                  # W LIST
+# AI PHOTOSHOP
+DOMAIN-SUFFIX,kira.art
+# W LIST
+DOMAIN-SUFFIX,uzuk.pro
 DOMAIN-SUFFIX,ibb.co
 DOMAIN-SUFFIX,imgbb.com
 DOMAIN-SUFFIX,amnezia.org
