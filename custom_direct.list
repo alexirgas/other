@@ -28,5 +28,6 @@ DOMAIN-SUFFIX,dzeninfra.ru
 DOMAIN-SUFFIX,cdnvideo.ru
 DOMAIN-SUFFIX,iptvx.one
 # GLANZ
-# DOMAIN-SUFFIX,ottg.app
+DOMAIN-SUFFIX,ottg.app
 DOMAIN-SUFFIX,ottg.io
+DOMAIN-SUFFIX,streamo.ru
