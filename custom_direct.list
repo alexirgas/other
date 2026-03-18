@@ -35,3 +35,5 @@ DOMAIN-SUFFIX,iptvx.one
 DOMAIN-SUFFIX,ottg.app
 DOMAIN-SUFFIX,ottg.io
 DOMAIN-SUFFIX,streamo.ru
+# TEST, включен в ipcidr discord !?
+DOMAIN-SUFFIX,sourceforge.net
