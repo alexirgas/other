@@ -47,3 +47,8 @@ DOMAIN-SUFFIX,ifconfig.me
 DOMAIN-SUFFIX,api.ipify.org
 DOMAIN-SUFFIX,checkip.amazonaws.com
 DOMAIN,ip.mail.ru
+# MAX для детекта, могут повлиять на приложения, НЕОБХОДИМА ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА
+DOMAIN,gstatic.com
+DOMAIN,main.telegram.org
+DOMAIN,mmg.whatsapp.net
+DOMAIN,mtalk.google.com
