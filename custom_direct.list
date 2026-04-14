@@ -52,3 +52,42 @@ DOMAIN,gstatic.com
 DOMAIN,main.telegram.org
 DOMAIN,mmg.whatsapp.net
 DOMAIN,mtalk.google.com
+# ОПЯТЬ ДЛЯ БЕЗОПАСНОСТИ МАКСА
+# IP-чек сервисы
+DOMAIN-SUFFIX,ip-api.com
+DOMAIN-SUFFIX,ipapi.co
+DOMAIN-SUFFIX,icanhazip.com
+DOMAIN-SUFFIX,wtfismyip.com
+DOMAIN-SUFFIX,myexternalip.com
+DOMAIN-SUFFIX,api4.my-ip.io
+DOMAIN-SUFFIX,ip4.seeip.org
+DOMAIN-SUFFIX,checkip.dyndns.org
+DOMAIN-SUFFIX,ipecho.net
+DOMAIN-SUFFIX,ident.me
+DOMAIN-SUFFIX,jsonip.com
+DOMAIN-SUFFIX,ipaddress.com
+DOMAIN-SUFFIX,api.my-ip.io
+DOMAIN-SUFFIX,ipv4.icanhazip.com
+DOMAIN-SUFFIX,ipv4bot.whatismyipaddress.com
+DOMAIN-SUFFIX,checkip.dyndns.com
+DOMAIN-SUFFIX,ip.seeip.org
+DOMAIN-SUFFIX,myip.dnsomatic.com
+DOMAIN-SUFFIX,ipv4.myexternalip.com
+DOMAIN-SUFFIX,bot.whatismyipaddress.com
+DOMAIN-SUFFIX,ip.tyk.nu
+DOMAIN-SUFFIX,ip.rootnet.app
+DOMAIN,4.ident.me
+DOMAIN,ipv4.ident.me
+DOMAIN-SUFFIX,ip4.me
+# Российские IP-чек
+DOMAIN-SUFFIX,internet.yandex.ru
+DOMAIN-SUFFIX,myip.ru
+DOMAIN-SUFFIX,ip.vk.com
+DOMAIN-SUFFIX,ip2location.com
+DOMAIN-SUFFIX,whoer.net
+# 2IP.IO используется для теста, пока отключил
+# DOMAIN-SUFFIX,2ip.io
+DOMAIN-SUFFIX,ip.webmoney.ru
+DOMAIN-SUFFIX,ipcheck.sprinthost.ru
+DOMAIN-SUFFIX,myip.com.ru
+DOMAIN-SUFFIX,ipshka.com
