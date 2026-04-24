@@ -38,6 +38,8 @@ DOMAIN-SUFFIX,ottg.io
 DOMAIN-SUFFIX,streamo.ru
 # TEST, включен в ipcidr discord !?
 DOMAIN-SUFFIX,sourceforge.net
+# TVBOOM
+DOMAIN-SUFFIX,tvboom.vip
 # MAX
 DOMAIN-SUFFIX,max.ru
 DOMAIN-SUFFIX,okcdn.ru
