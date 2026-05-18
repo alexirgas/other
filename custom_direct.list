@@ -60,6 +60,9 @@ DOMAIN,gstatic.com
 DOMAIN,main.telegram.org
 DOMAIN,mmg.whatsapp.net
 DOMAIN,mtalk.google.com
+DOMAIN,pushtrs.push.hicloud.com
+DOMAIN,pushtrs1.push.hicloud.com
+DOMAIN,token-drcn.push.dbankcloud.com
 # ОПЯТЬ ДЛЯ БЕЗОПАСНОСТИ МАКСА
 ## IP-чек сервисы
 DOMAIN-SUFFIX,ip-api.com
