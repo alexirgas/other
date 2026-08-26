@@ -97,6 +97,8 @@ DOMAIN,4.ident.me
 DOMAIN,ipv4.ident.me
 DOMAIN-SUFFIX,ip4.me
 DOMAIN,www.ident.me
+# TEST
+DOMAIN-SUFFIX,dnscheck.tools
 ## Российские IP-чек
 DOMAIN-SUFFIX,internet.yandex.ru
 DOMAIN-SUFFIX,myip.ru
