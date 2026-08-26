@@ -29,9 +29,11 @@ DOMAIN-KEYWORD,aliexpress
 # вызовы по WIFI
 DOMAIN-SUFFIX,3gppnetwork.org
 # DRM PLAYER
-DOMAIN-SUFFIX,drm-play.com
+# DOMAIN,drm-play.com
+# DOMAIN,ott.drm-play.com
+# DOMAIN,epg.drm-play.com
 # для определения ip в DRM PLAYER
-DOMAIN-SUFFIX,ipinfo.io
+# DOMAIN-SUFFIX,ipinfo.io
 # для ott play FOSS
 DOMAIN-SUFFIX,ottp.eu.org
 DOMAIN-SUFFIX,lfstrm.tv
