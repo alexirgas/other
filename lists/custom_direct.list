@@ -52,17 +52,26 @@ DOMAIN-SUFFIX,sourceforge.net
 DOMAIN-SUFFIX,tvboom.vip
 # VIVAMAX
 DOMAIN-SUFFIX,vivamax.pro
-# MAX
+############################################################
+# MAX (мессенджер): домены, которые приложение использует и проверяет
+# Источник списков: github.com/fatyzzz/max-list (ip-check-formatted.txt, vpndetect.txt), сверено 30.10.2026
+# Автор обновляет списки ежедневно; происхождение данных у автора не раскрыто, сверять с реальным трафиком
+############################################################
+## MAX: собственные домены сервиса
+## (okcdn.ru покрывает и calls.okcdn.ru из списка автора)
 DOMAIN-SUFFIX,max.ru
 DOMAIN-SUFFIX,okcdn.ru
 DOMAIN-SUFFIX,oneme.ru
-DOMAIN,ipv4-internet.yandex.net/api/v0/ip
-DOMAIN,ipv6-internet.yandex.net/api/v0/ip
+## MAX: сервисы определения внешнего IP (ip-check-formatted.txt, без путей)
+DOMAIN,ipv4-internet.yandex.net
+DOMAIN,ipv6-internet.yandex.net
 DOMAIN-SUFFIX,ifconfig.me
 DOMAIN-SUFFIX,api.ipify.org
 DOMAIN-SUFFIX,checkip.amazonaws.com
 DOMAIN,ip.mail.ru
-## MAX для детекта, могут повлиять на приложения, НЕОБХОДИМА ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА
+## MAX: скрытая проверка доступности сервисов (vpndetect.txt), могут повлиять на приложения, НЕОБХОДИМА ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА
+## (gosuslugi.ru из списка автора не добавлен: уходит напрямую по общему правилу зоны .ru в конфиге)
+## gstatic.com только точным доменом (DOMAIN): через DOMAIN-SUFFIX весь gstatic ушёл бы мимо групп YouTube/GEMINI/ИИ
 DOMAIN,gstatic.com
 DOMAIN,main.telegram.org
 DOMAIN,mmg.whatsapp.net
@@ -70,7 +79,9 @@ DOMAIN,mtalk.google.com
 DOMAIN,pushtrs.push.hicloud.com
 DOMAIN,pushtrs1.push.hicloud.com
 DOMAIN,token-drcn.push.dbankcloud.com
-# ОПЯТЬ ДЛЯ БЕЗОПАСНОСТИ МАКСА
+############################################################
+# Дополнительные IP-чекеры (в списке MAX их нет, добавлены для подстраховки)
+############################################################
 ## IP-чек сервисы
 DOMAIN-SUFFIX,ip-api.com
 DOMAIN-SUFFIX,ipapi.co
