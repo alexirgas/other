@@ -59,9 +59,9 @@ proxy-groups:
 
 rule-providers:
 # --- CLASSICAL ---
-  custom_direct:            { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_direct.list }
-  custom_failover:          { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_failover.list }
-  custom_vless:             { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_vless.list }
+  custom_direct:            { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/lists/custom_direct.list }
+  custom_failover:          { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/lists/custom_failover.list }
+  custom_vless:             { <<: *classical,    url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/lists/custom_vless.list }
   discord@classical:        { <<: *classical,    url: https://github.com/zxc-rv/assets/raw/main/rules/discord.list }
   discord-anton@ipcidr:     { <<: *classical,    url: https://github.com/Anton111111/rule-lists/releases/latest/download/discord_ips.list }
 

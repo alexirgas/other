@@ -125,9 +125,9 @@ rule-providers:
   # Разные источники
   smart_tv_block:          { <<: *classical,   url: https://raw.githubusercontent.com/hkamran80/blocklists/main/smart-tv.txt }
   # Персональные списки (github)
-  custom_direct:           { <<: *classical,   url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_direct.list }
-  custom_failover:         { <<: *classical,   url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_failover.list }
-  custom_vless:            { <<: *classical,   url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/custom_vless.list }
+  custom_direct:           { <<: *classical,   url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/lists/custom_direct.list }
+  custom_failover:         { <<: *classical,   url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/lists/custom_failover.list }
+  custom_vless:            { <<: *classical,   url: https://raw.githubusercontent.com/alexirgas/other/refs/heads/main/lists/custom_vless.list }
 
 rules:
 # ЗАПРЕЩАЮЩИЕ ПРАВИЛА
