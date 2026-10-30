@@ -2,17 +2,13 @@
 DOMAIN-SUFFIX,m3ulist.app
 ###################################
 DOMAIN-SUFFIX,1lot.tv
-DOMAIN-SUFFIX,2ip.ru
 DOMAIN-SUFFIX,balelbrus.com
 DOMAIN-SUFFIX,lightiptv.cc
 DOMAIN-SUFFIX,lightott.cc
 DOMAIN-SUFFIX,ngenix.net
 DOMAIN-SUFFIX,only4.tv
 DOMAIN-SUFFIX,1ce.xyz
-DOMAIN-SUFFIX,ott.net.ru
 DOMAIN-SUFFIX,peaktv.name
-DOMAIN-SUFFIX,peaktv.su
-DOMAIN-SUFFIX,pp.ru
 DOMAIN-SUFFIX,team.ga
 DOMAIN-SUFFIX,troya.info
 DOMAIN-SUFFIX,tv.in
@@ -20,8 +16,7 @@ DOMAIN-SUFFIX,tv.team
 DOMAIN-SUFFIX,hls.ga
 DOMAIN-SUFFIX,hls.gd
 DOMAIN-SUFFIX,tvpl.me
-DOMAIN-KEYWORD,tvtm.one
-DOMAIN-SUFFIX,iptvcinema.ru
+DOMAIN-SUFFIX,tvtm.one
 # EPG TV.TEAM
 DOMAIN-SUFFIX,epg.team
 DOMAIN-KEYWORD,kaspersky
@@ -39,15 +34,10 @@ DOMAIN-SUFFIX,3gppnetwork.org
 DOMAIN-SUFFIX,ottp.eu.org
 DOMAIN-SUFFIX,lfstrm.tv
 DOMAIN-SUFFIX,peredach.com
-DOMAIN-SUFFIX,dzeninfra.ru
-DOMAIN-SUFFIX,cdnvideo.ru
 DOMAIN-SUFFIX,iptvx.one
 # GLANZ
 DOMAIN-SUFFIX,ottg.app
 DOMAIN-SUFFIX,ottg.io
-DOMAIN-SUFFIX,streamo.ru
-# TEST, включен в ipcidr discord !?
-DOMAIN-SUFFIX,sourceforge.net
 # TVBOOM
 DOMAIN-SUFFIX,tvboom.vip
 # VIVAMAX
@@ -81,45 +71,68 @@ DOMAIN,pushtrs1.push.hicloud.com
 DOMAIN,token-drcn.push.dbankcloud.com
 ############################################################
 # Дополнительные IP-чекеры (в списке MAX их нет, добавлены для подстраховки)
+# Закомментированные ниже записи дублируют GEOSITE_IP_GEO_DETECT (тоже DIRECT): результат тот же, строки отключены.
 ############################################################
 ## IP-чек сервисы
-DOMAIN-SUFFIX,ip-api.com
-DOMAIN-SUFFIX,ipapi.co
-DOMAIN-SUFFIX,icanhazip.com
-DOMAIN-SUFFIX,wtfismyip.com
-DOMAIN-SUFFIX,myexternalip.com
-DOMAIN-SUFFIX,api4.my-ip.io
-DOMAIN-SUFFIX,ip4.seeip.org
-DOMAIN-SUFFIX,checkip.dyndns.org
-DOMAIN-SUFFIX,ipecho.net
-DOMAIN-SUFFIX,ident.me
-DOMAIN-SUFFIX,jsonip.com
-DOMAIN-SUFFIX,ipaddress.com
-DOMAIN-SUFFIX,api.my-ip.io
-DOMAIN-SUFFIX,ipv4.icanhazip.com
-DOMAIN-SUFFIX,ipv4bot.whatismyipaddress.com
-DOMAIN-SUFFIX,checkip.dyndns.com
-DOMAIN-SUFFIX,ip.seeip.org
-DOMAIN-SUFFIX,myip.dnsomatic.com
-DOMAIN-SUFFIX,ipv4.myexternalip.com
-DOMAIN-SUFFIX,bot.whatismyipaddress.com
-DOMAIN-SUFFIX,ip.tyk.nu
+# DOMAIN-SUFFIX,ip-api.com
+# DOMAIN-SUFFIX,ipapi.co
+# DOMAIN-SUFFIX,icanhazip.com
+# DOMAIN-SUFFIX,wtfismyip.com
+# DOMAIN-SUFFIX,myexternalip.com
+# DOMAIN-SUFFIX,api4.my-ip.io
+# DOMAIN-SUFFIX,ip4.seeip.org
+# DOMAIN-SUFFIX,checkip.dyndns.org
+# DOMAIN-SUFFIX,ipecho.net
+# DOMAIN-SUFFIX,ident.me
+# DOMAIN-SUFFIX,jsonip.com
+# DOMAIN-SUFFIX,ipaddress.com
+# DOMAIN-SUFFIX,api.my-ip.io
+# DOMAIN-SUFFIX,ipv4.icanhazip.com
+# DOMAIN-SUFFIX,ipv4bot.whatismyipaddress.com
+# DOMAIN-SUFFIX,checkip.dyndns.com
+# DOMAIN-SUFFIX,ip.seeip.org
+# DOMAIN-SUFFIX,myip.dnsomatic.com
+# DOMAIN-SUFFIX,ipv4.myexternalip.com
+# DOMAIN-SUFFIX,bot.whatismyipaddress.com
+# DOMAIN-SUFFIX,ip.tyk.nu
 DOMAIN-SUFFIX,ip.rootnet.app
-DOMAIN,4.ident.me
-DOMAIN,ipv4.ident.me
-DOMAIN-SUFFIX,ip4.me
-DOMAIN,www.ident.me
+# DOMAIN,4.ident.me
+# DOMAIN,ipv4.ident.me
+# DOMAIN-SUFFIX,ip4.me
+# DOMAIN,www.ident.me
 # TEST
-DOMAIN-SUFFIX,dnscheck.tools
+# DOMAIN-SUFFIX,dnscheck.tools
 ## Российские IP-чек
-DOMAIN-SUFFIX,internet.yandex.ru
-DOMAIN-SUFFIX,myip.ru
 DOMAIN-SUFFIX,ip.vk.com
-DOMAIN-SUFFIX,ip2location.com
-DOMAIN-SUFFIX,whoer.net
-## 2IP.IO используется для теста, пока отключил
-DOMAIN-SUFFIX,2ip.io
-DOMAIN-SUFFIX,ip.webmoney.ru
-DOMAIN-SUFFIX,ipcheck.sprinthost.ru
-DOMAIN-SUFFIX,myip.com.ru
+# DOMAIN-SUFFIX,ip2location.com
+# DOMAIN-SUFFIX,whoer.net
 DOMAIN-SUFFIX,ipshka.com
+############################################################
+# ОТКЛЮЧЕНО: домены зон .ru / .su / .рф
+# В конфиге есть общее правило: DOMAIN-SUFFIX,ru / su / xn--p1ai -> DIRECT.
+# Эти записи его дублируют, поэтому закомментированы: результат тот же.
+# Если общее правило из конфига уберёшь, раскомментируй нужные строки.
+# Домены MAX (max.ru, okcdn.ru, oneme.ru, ip.mail.ru) здесь не перечислены: они оставлены активными в разделе MAX.
+############################################################
+# DOMAIN-SUFFIX,2ip.ru  (также в GEOSITE_IP_GEO_DETECT)
+# DOMAIN-SUFFIX,ott.net.ru
+# DOMAIN-SUFFIX,peaktv.su
+# DOMAIN-SUFFIX,pp.ru
+# DOMAIN-SUFFIX,iptvcinema.ru
+# DOMAIN-SUFFIX,dzeninfra.ru
+# DOMAIN-SUFFIX,cdnvideo.ru
+# DOMAIN-SUFFIX,streamo.ru
+# DOMAIN-SUFFIX,internet.yandex.ru
+# DOMAIN-SUFFIX,myip.ru  (также в GEOSITE_IP_GEO_DETECT)
+# DOMAIN-SUFFIX,ip.webmoney.ru
+# DOMAIN-SUFFIX,ipcheck.sprinthost.ru
+# DOMAIN-SUFFIX,myip.com.ru
+############################################################
+# ОТКЛЮЧЕНО: sourceforge.net
+# Раньше шёл напрямую (пометка была: «TEST, включен в ipcidr discord !?»):
+# предположительно, его IP попадал в список IP-адресов Discord из старого конфига.
+# В конфиге GAG575 такого списка нет (Discord определяется по доменам), поэтому причина, скорее всего, исчезла.
+# Сейчас сайт идёт по общим правилам конфига (группа ОСТАЛЬНОЙ ТРАФИК).
+# Если сайт перестанет открываться, раскомментируй строку ниже.
+############################################################
+# DOMAIN-SUFFIX,sourceforge.net
