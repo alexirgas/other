@@ -27,6 +27,20 @@ if [ -n "$(swapon --show --noheadings)" ]; then ok "swap есть ($(free -m | a
 [ "$(cat /proc/sys/vm/swappiness)" -le 20 ] && ok "swappiness $(cat /proc/sys/vm/swappiness)" || warn "swappiness $(cat /proc/sys/vm/swappiness) (рекомендуется 10) -> 02"
 u=$(df -P / | awk 'NR==2{gsub("%","",$5);print $5}'); [ "$u" -lt 80 ] && ok "диск / занят на $u%" || warn "диск / занят на $u%"
 info "ОЗУ: $(free -m | awk '/Mem/{print $2" МБ, доступно "$7" МБ"}')"
+mx=$(cat /proc/sys/net/netfilter/nf_conntrack_max 2>/dev/null)
+if [ -n "$mx" ]; then
+  cto=$(cat /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established)
+  [ "$mx" -ge 65536 ] && ok "conntrack: лимит $mx записей (занято $(cat /proc/sys/net/netfilter/nf_conntrack_count))" || bad "conntrack: лимит всего $mx записей (риск 'table full' под нагрузкой) -> 15-conntrack.sh"
+  [ "$cto" -le 86400 ] && ok "conntrack: таймаут established ${cto}с" || warn "conntrack: таймаут established ${cto}с (мёртвые сессии копятся сутками) -> 15"
+  tf=$(dmesg 2>/dev/null | grep -c 'table full'); [ "${tf:-0}" = 0 ] && ok "в журнале ядра нет 'table full'" || bad "'table full' в журнале ядра: $tf раз(а): были потери новых соединений -> 15"
+fi
+[ -f /etc/cron.d/vps-collect ] && ok "сборщик метрик установлен (последняя строка: $(tail -n 1 /var/log/vps-collect.log 2>/dev/null | cut -c1-19))" || warn "нет сборщика метрик (разбор 'почему тупило' невозможен) -> 16-collector.sh"
+sw=$(free -m | awk '/Swap/{print $2}'); dsz=$(df -Pm / | awk 'NR==2{print $2}')
+[ "${sw:-0}" -gt 1100 ] && [ "$dsz" -lt 20000 ] && warn "swap ${sw} МБ на диске ${dsz} МБ (слишком много для малого диска) -> 18-swap-resize.sh"
+if command -v docker >/dev/null 2>&1; then
+  bc=$(docker system df --format '{{.Type}}|{{.Reclaimable}}' 2>/dev/null | awk -F'|' '$1=="Build Cache"{print $2}')
+  case "$bc" in *GB*) warn "кэш сборки Docker можно освободить: $bc -> 17-docker-cleanup.sh";; *) ok "кэш сборки Docker небольшой (${bc:-n/a})";; esac
+fi
 
 hdr "3. Обновления системы"
 dpkg -s unattended-upgrades >/dev/null 2>&1 && grep -q 'Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades 2>/dev/null && ok "unattended-upgrades включён" || bad "автообновления безопасности не настроены -> 03-unattended-upgrades.sh"
