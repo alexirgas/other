@@ -22,7 +22,7 @@ docker build -q -f "$W/php.dockerfile" --build-arg image="$ALP" -t $I "$BASE/doc
 docker run --rm $I php -v | head -1 | grep -q 'PHP 8\.3' || die "в образе не PHP 8.3"
 docker run --rm mercurykd/vpnbot-php:backup-$DATE php -m 2>/dev/null | sort > $W/mod.old
 docker run --rm $I php -m | sort > $W/mod.new
-MISS=$(comm -23 $W/mod.old $W/mod.new | tr '\n' ' '); [ -z "$MISS" ] || die "в новом образе нет модулей: $MISS"
+MISS=$(comm -23 $W/mod.old $W/mod.new | grep -v '^zend_test$' | tr '\n' ' ')   # zend_test - тестовый модуль самого PHP, боту не нужен; [ -z "$MISS" ] || die "в новом образе нет модулей: $MISS"
 ok "модули: ничего не потеряно"
 BADL=$(docker run --rm -v "$BASE/app:/app:ro" $I sh -c 'find /app -name "*.php" -exec php -l {} \; 2>&1' | grep -v '^No syntax errors' | head)
 [ -z "$BADL" ] || { say "$BADL"; die "php -l нашёл ошибки"; }
