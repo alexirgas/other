@@ -1,10 +1,10 @@
 #!/bin/sh
-# Шаг 11. Раз в неделю (пт 04:19, за минуту до перезагрузки в 04:20) очищать служебные логи бота.
+# Шаг 11. Раз в неделю, за минуту до плановой перезагрузки (время берётся из /etc/cron.d, иначе пт 04:19) очищать служебные логи бота.
 # НЕ трогаются логи, которые бот использует для «Анализа подозрительных IP» и статистики
 # (список KEEP ниже): их очищает владелец сам через меню бота «логи».
 . "$(dirname "$0")/lib.sh"; need_root; mode_banner
 S=/usr/local/sbin/clear-vpnbot-logs.sh; C=/etc/cron.d/clear-vpnbot-logs
-if [ "$APPLY" != 1 ]; then say "(dry-run) установил бы $S и $C (пт 04:19)"; exit 0; fi
+if [ "$APPLY" != 1 ]; then say "(dry-run) установил бы $S и $C (за минуту до плановой перезагрузки)"; exit 0; fi
 cat > "$S" <<'SCRIPT'
 #!/bin/sh
 # Очистка служебных логов vpnbot_extra. --dry-run: только показать.
@@ -20,5 +20,13 @@ done
 [ $DRY = 1 ] || logger -t clear-vpnbot-logs "service logs cleared in $D"
 SCRIPT
 chmod 755 "$S"; sh -n "$S" || die "синтаксис"
-printf '# Weekly cleanup of service logs one minute before the Friday reboot\n19 4 * * 5 root /usr/local/sbin/clear-vpnbot-logs.sh\n' > "$C"; chmod 644 "$C"
+# время: за минуту до плановой перезагрузки из /etc/cron.d (shutdown -r), иначе пятница 04:19
+R=$(grep -hE '^[0-9]+ [0-9]+ \* \* [0-9*]+ .*(shutdown -r|reboot)' /etc/cron.d/* 2>/dev/null | grep -v clear-vpnbot | head -1)
+CM=19; CH=4; CD=5
+if [ -n "$R" ]; then
+  set -f; set -- $R; set +f; rm_=$1; rh=$2; CD=$5
+  if [ "$rm_" -ge 1 ]; then CM=$((rm_-1)); CH=$rh; elif [ "$rh" -ge 1 ]; then CM=59; CH=$((rh-1)); fi
+  say "перезагрузка найдена: $R -> очистка в $CH:$CM (день недели $CD)"
+else say "задание перезагрузки не найдено, ставлю пятницу 04:19"; fi
+printf '# Weekly cleanup of service logs one minute before the reboot\n%s %s * * %s root /usr/local/sbin/clear-vpnbot-logs.sh\n' "$CM" "$CH" "$CD" > "$C"; chmod 644 "$C"
 ok "установлено"; "$S" --dry-run
