@@ -53,6 +53,7 @@ if [ ! -d "$BASE" ]; then warn "нет $BASE - остальные проверк
   m=$(grep -c '????' "$BASE/app/bot.php" 2>/dev/null); info "строк с '????' в bot.php: $m (остаток в комментариях безвреден)"
   ls /root/vpnbot-backup-*.tar.gz >/dev/null 2>&1 && ok "есть архив бота: $(ls /root/vpnbot-backup-*.tar.gz | tail -1)" || bad "нет архива /root/vpnbot-backup-*.tar.gz -> 05-backup.sh"
   docker images --format '{{.Tag}}' | grep -q '^backup-' && ok "есть образы с тегом backup-*" || warn "нет образов backup-* (откат образов невозможен) -> 05"
+  grep -qF "git fetch origin --quiet || true;" "$BASE/makefile" 2>/dev/null && ok "makefile: git fetch не фатален (бот поднимется после перезагрузки)" || bad "makefile: git fetch фатален - после reboot бот может остаться остановленным -> 12-fix-makefile-fetch.sh"
   [ -f /etc/cron.d/clear-vpnbot-logs ] && ok "очистка логов по cron настроена" || warn "очистка служебных логов не настроена -> 11-log-cleanup.sh"
   for c in $(docker ps --format '{{.Names}}'); do
     mx=$(docker inspect "$c" --format '{{index .HostConfig.LogConfig.Config "max-size"}}'); [ -n "$mx" ] || nolim="$nolim $c"
