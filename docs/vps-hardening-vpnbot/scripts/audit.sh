@@ -32,6 +32,7 @@ if [ -n "$mx" ]; then
   cto=$(cat /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established)
   [ "$mx" -ge 65536 ] && ok "conntrack: лимит $mx записей (занято $(cat /proc/sys/net/netfilter/nf_conntrack_count))" || bad "conntrack: лимит всего $mx записей (риск 'table full' под нагрузкой) -> 15-conntrack.sh"
   [ "$cto" -le 86400 ] && ok "conntrack: таймаут established ${cto}с" || warn "conntrack: таймаут established ${cto}с (мёртвые сессии копятся сутками) -> 15"
+  [ -f /etc/modules-load.d/nf_conntrack.conf ] && ok "conntrack: модуль грузится до sysctl (настройки переживут перезагрузку)" || warn "conntrack: нет /etc/modules-load.d/nf_conntrack.conf - после перезагрузки лимит может вернуться к 8192 -> 15-conntrack.sh"
   tf=$(dmesg 2>/dev/null | grep -c 'table full'); [ "${tf:-0}" = 0 ] && ok "в журнале ядра нет 'table full'" || bad "'table full' в журнале ядра: $tf раз(а): были потери новых соединений -> 15"
 fi
 [ -f /etc/cron.d/vps-collect ] && ok "сборщик метрик установлен (последняя строка: $(tail -n 1 /var/log/vps-collect.log 2>/dev/null | cut -c1-19))" || warn "нет сборщика метрик (разбор 'почему тупило' невозможен) -> 16-collector.sh"
