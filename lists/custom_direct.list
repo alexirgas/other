@@ -43,6 +43,32 @@ DOMAIN-SUFFIX,tvboom.vip
 # VIVAMAX
 DOMAIN-SUFFIX,vivamax.pro
 ############################################################
+# ТВ+ Эфир (com.andevapps.ontv) и Эфир ТВ+ (limehd.ru.ctvshka) - платформа LimeHD
+# Источник: дампы PCAPdroid 10.11.2026; все IP сервисов - российские (входят в GEOIP_RUS),
+# но TLS-соединения после sniffer'а приходят без destinationIP, и GEOIP_RUS (no-resolve) их не ловит:
+# pl.iptv2021.com уходил по MATCH в прокси, сервер видел зарубежный IP -> каналы РФ недоступны
+############################################################
+## плейлисты, витрина, DRM, инфо (pl., vitrina.)
+DOMAIN-SUFFIX,iptv2021.com
+## потоки и сервисы (mhd*, drm., info., cdn-lb.)
+DOMAIN-SUFFIX,iptv2022.com
+## API LimeHD
+DOMAIN-SUFFIX,limehd.tv
+## P2P-CDN Teleport (cdn, gateway, stat, signal-*, swarm-*, stun)
+DOMAIN-SUFFIX,teleport.media
+## CDN потоков (mbmh5s36ok.a.trbcdn.net)
+DOMAIN-SUFFIX,trbcdn.net
+## публичные STUN, которыми P2P узнаёт внешний IP (UDP без домена: доменное правило не сработает, поэтому IP)
+## IP взяты из дампа и могут смениться
+IP-CIDR,141.193.213.21/32,no-resolve
+IP-CIDR,77.72.169.210/32,no-resolve
+IP-CIDR,77.72.169.211/32,no-resolve
+## дублируют общее правило зоны .ru в конфиге, поэтому отключены:
+# DOMAIN-SUFFIX,stbid.ru
+# DOMAIN-SUFFIX,telecid.ru
+# DOMAIN-SUFFIX,telecomid.ru
+# DOMAIN-SUFFIX,cdnvideo.ru  (также в разделе ОТКЛЮЧЕНО ниже)
+############################################################
 # MAX (мессенджер): домены, которые приложение использует и проверяет
 # Источник списков: github.com/fatyzzz/max-list (ip-check-formatted.txt, vpndetect.txt), сверено 30.10.2026
 # Автор обновляет списки ежедневно; происхождение данных у автора не раскрыто, сверять с реальным трафиком
