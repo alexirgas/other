@@ -162,3 +162,5 @@ DOMAIN-SUFFIX,ipshka.com
 # Если сайт перестанет открываться, раскомментируй строку ниже.
 ############################################################
 # DOMAIN-SUFFIX,sourceforge.net
+# IPTV-бот 17.11.2026
+DOMAIN-SUFFIX,iptvcinema.ru
